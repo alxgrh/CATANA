@@ -1,9 +1,12 @@
 # Detection and Analysis of Content Creator Collaborations in Youtube Videos using Face Recognition
 
 YouTube analysis concerning content creator collaborations in videos, using face recognition.
-This projects includes data acquisition from YouTube, video and face processing and statistical evaluation of YouTube data.
+This projects includes the framework for data acquisition from YouTube, video and face processing and statistical evaluation of the acquired YouTube data.
 
-For more information see the CATANA publication (under submission).
+This repository contains the framework described in the paper 
+Collaborations on YouTube: From Unsupervised
+Detection to the Impact on Video and Channel Popularity, C. Koch, M. Lode, D. Stohr, A. Rizk, R. Steinmetz, ACM Transactions on Multimedia Computing, Communications and Applications (TOMM) 
+(under submission)
 
 
 # Face Recognition Algorithm
@@ -15,7 +18,7 @@ Face detection and alignment uses MTCNN [Multi-task CNN](https://kpzhang93.githu
 For clustering face features, the algorithm [HDBSCAN](https://github.com/scikit-learn-contrib/hdbscan) is used.
 
 ## Performance
-Face recognition evaluation were conducted on the [YouTube Faces](https://www.cs.tau.ac.il/~wolf/ytfaces/) dataset aswell as Labeled Faces in the Wild [LFW](http://vis-www.cs.umass.edu/lfw/) dataset.
+Face recognition evaluation were conducted on the [YouTube Faces](https://www.cs.tau.ac.il/~wolf/ytfaces/) dataset as well as Labeled Faces in the Wild [LFW](http://vis-www.cs.umass.edu/lfw/) dataset.
 
 |     | accuracy |
 |-----|----------|
@@ -49,7 +52,7 @@ If you are interested in the actual crawled YouTube data you can contact us.
 
 Depending on the use-case different requirements must be met.
 
-For using the CATANA framework only, without evaluation of the other face recognition methods like OpenFace, see requirements.txt aswell as the
+For using the CATANA framework only, without evaluation of the other face recognition methods like OpenFace, see requirements.txt as well as the
 requirements of [FaceNet](https://github.com/davidsandberg/facenet).
 
 For executing the face recognition evaluations, additionally requirements for the OpenFace (https://cmusatyalab.github.io/openface/) framework must be installed.
@@ -141,7 +144,7 @@ crawler code for YouTube, Socialblade and Google Images
 evaluation code, jupyter-notebook based evaluation, code for plot creation
 
 ### face_recognition
-video download, face recognition and clustering pipeline, contains Facenet code base aswell as youtube_dl
+video download, face recognition and clustering pipeline, contains Facenet code base as well as youtube_dl
 
 ### visualization
 collaboration graph visualization based on Gugel Universum (http://universum.gugelproductions.de/).
