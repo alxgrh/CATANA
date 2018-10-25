@@ -1,3 +1,7 @@
+You can find our Journal paper **Collaborations on YouTube: From Unsupervised Detection to the Impact on Video and Channel Popularity** published in **ACM Transactions on Multimedia Computing, Communications, and Applications (TOMM)** [here](https://dl.acm.org/citation.cfm?id=3241054).
+___
+
+
 # Detection and Analysis of Content Creator Collaborations in Youtube Videos using Face Recognition
 
 YouTube analysis concerning content creator collaborations in videos, using face recognition.
