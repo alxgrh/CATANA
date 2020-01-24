@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import print_function
 
 import scrapy
 import logging
@@ -29,10 +30,12 @@ import urllib
 import json
 import time
 from datetime import datetime
-import ushlex
+import shlex
+
+
 
 def quoteSplit(value):
-    lex = ushlex.shlex(value)
+    lex = shlex.shlex(value)
     lex.quotes = '"'
     lex.whitespace_split = True
     lex.commenters = ''
@@ -105,12 +108,12 @@ class UpdateYTSpider(scrapy.Spider):
 
         if not 'snippet' in jsonresponse["items"][0]:
             #dateAdded = ''
-            print 'NO SNIPPET IN RESPONSE', id
+            print('NO SNIPPET IN RESPONSE', id)
         else:
             
             if not 'thumbnails' in jsonresponse["items"][0]["snippet"]:
                 #dateAdded = ''
-                print 'NO THUMBNAILS IN RESPONSE', id
+                print('NO THUMBNAILS IN RESPONSE', id)
             else:
                 #dateAdded = jsonresponse["items"][0]["snippet"]["publishedAt"] if "publishedAt" in jsonresponse["items"][0]["snippet"] else u''
                 thumbnailUrl = jsonresponse["items"][0]["snippet"]["thumbnails"]["default"]["url"] if "default" in jsonresponse["items"][0]["snippet"]["thumbnails"] else jsonresponse["items"][0]["snippet"]["thumbnails"]["medium"]["url"]

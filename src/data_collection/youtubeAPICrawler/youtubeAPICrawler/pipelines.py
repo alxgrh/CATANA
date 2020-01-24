@@ -15,7 +15,7 @@ class PopulateDatabasePipeline(object):
     
     def __init__(self):
         # init, create new database or open existing database
-        from youtubeAPICrawler import database
+        from catana import database
         self.db = database.YTDatabase()
 
     def open_spider(self, spider):

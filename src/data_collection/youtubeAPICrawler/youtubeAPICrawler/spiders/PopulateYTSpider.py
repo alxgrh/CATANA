@@ -28,16 +28,18 @@ import logging
 import urllib
 import json
 import time
-import ushlex
+import shlex
 
 def quoteSplit(value):
-    lex = ushlex.shlex(value)
+    lex = shlex.shlex(value)
     lex.quotes = '"'
     lex.whitespace_split = True
     lex.commenters = ''
     return list(lex)
 
 from youtubeAPICrawler.items import *
+
+from catana import settings # YOUTUBE_API_KEY, YOUTUBE_CHANNEL_LIST
 
 class PopulateYTSpider(scrapy.Spider):
     '''
@@ -61,7 +63,9 @@ class PopulateYTSpider(scrapy.Spider):
 
     MAX_SEARCH_DEPTH = 0 # Crawl the related channel of our provided channel
 
-    YOUTUBE_API_KEY = 'X'
+    YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY
+    YOUTUBE_CHANNEL_LIST = settings.YOUTUBE_CHANNEL_LIST
+
     YOUTUBE_API_CHANNEL_URL = 'https://www.googleapis.com/youtube/v3/channels'
     YOUTUBE_API_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search'
     YOUTUBE_API_PLAYLISTITEMS_URL = 'https://www.googleapis.com/youtube/v3/playlistItems'  
@@ -84,7 +88,7 @@ class PopulateYTSpider(scrapy.Spider):
         '''
         urls = []
 
-        with open('bidi_channel_graph_ids.json') as IDs:
+        with open(self.YOUTUBE_CHANNEL_LIST) as IDs:
             for id in json.load(IDs):
                 urls.append(self.generate_channel_request(id))
         

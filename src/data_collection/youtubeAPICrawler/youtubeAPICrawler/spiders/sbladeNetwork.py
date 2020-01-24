@@ -22,12 +22,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import print_function
+
 import scrapy
 import re
 import json
 import logging
 
-from youtubeAPICrawler.database import *
+#from youtubeAPICrawler.database import *
+from catana.database import *
 
 class sbladeNetwork(scrapy.Spider):
     name = "networktag"
@@ -50,7 +53,7 @@ class sbladeNetwork(scrapy.Spider):
         channelIDs = []
 
         with self.db._session_scope(True) as session:
-            print 'channel#', session.query(Channel).count() # Number of channels in db
+            print('channel#', session.query(Channel).count()) # Number of channels in db
             
             for ch in session.query(Channel): # Check is channel is music related or empty and remove from db
                 if ch.network == None:
