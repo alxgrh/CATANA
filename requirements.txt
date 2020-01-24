@@ -1,5 +1,5 @@
 numpy
-tensorflow==1.0
+tensorflow
 scipy
 scikit-learn
 jupyter
@@ -10,5 +10,5 @@ networkx
 cython
 scrapy
 sqlalchemy
-guppy
+guppy3
 hdbscan

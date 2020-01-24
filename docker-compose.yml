@@ -1,10 +1,12 @@
 version: "3.7"
 
 volumes:
-  sql_datadir:
+  db_datadir:
+
+networks:
+  catana:
 
 services:
-
   app:
     build:
       dockerfile: ./docker/Dockerfile.app
@@ -15,14 +17,17 @@ services:
     container_name: catana
     depends_on:
       - db
-
+    networks:
+      catana:
   db:
     image: mysql
     container_name: catana-database
     restart: always
     volumes:
-      - sql_datadir:/var/lib/mysql
+      - db_datadir:/var/lib/mysql
     env_file:
       - ./docker/db.env
     ports:
       - "33306:3306"
+    networks:
+      catana:
