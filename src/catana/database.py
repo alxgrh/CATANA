@@ -36,6 +36,8 @@ from os import path #posixpath
 Base = declarative_base()
 
 
+from catana.settings import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_ENGINE
+
 '''
 ''
 '    Table Definitions
@@ -154,37 +156,21 @@ class VideoFeatureQueue(Base):
 
 class YTDatabase(object):
 
-    #DATA_DIR = '/../../../data/'
-    #DB_FILE = 'ytDatabase.db'
-
-    DB_NAME = 'X'
-
-    DB_USER = 'X'
-    DB_PW = 'X'
-
-    DB_HOST = '127.0.0.1'
-    DB_PORT = '3306'
-
-    
     def __init__(self):
         #DB_PATH = path.join(self.DATA_DIR, self.DB_FILE)
         #self.engine = create_engine('sqlite://'+DB_PATH, encoding='utf-8', convert_unicode=True)
 
-        # This engine just used to query for list of databases
-        mysql_engine = create_engine('mysql+mysqldb://{0}:{1}@{2}:{3}'.format(self.DB_USER, self.DB_PW, self.DB_HOST, self.DB_PORT), encoding='utf-8', convert_unicode=True)
-
-        # Query for existing databases
-        mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {0} ".format(self.DB_NAME))
-
-        # Go ahead and use this engine
-        self.engine = create_engine('mysql+mysqldb://{0}:{1}@{2}:{3}/{4}?charset=utf8mb4'.format(self.DB_USER, self.DB_PW, self.DB_HOST, self.DB_PORT, self.DB_NAME), encoding='utf-8', convert_unicode=True)
-
+        if DB_ENGINE == 'postgresql':
+            self.engine = create_engine('{0}://{1}:{2}@{3}:{4}/{5}'.format(DB_ENGINE, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME))
+        elif DB_ENGINE == 'mysql':
+            self.engine = create_engine('{0}://{1}:{2}@{3}:{4}/{5}?charset=utf8mb4'.format(DB_ENGINE, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME), encoding='utf-8', convert_unicode=True)
 
         Base.metadata.bind = self.engine
         self.DBSession = sessionmaker(bind = self.engine)
         self.createDatabase()
-        self.DBSession().execute("SET NAMES utf8mb4 COLLATE 'utf8mb4_unicode_ci'")
-        self.DBSession().execute("SET CHARACTER SET utf8mb4")
+        if DB_ENGINE == 'mysql':
+            self.DBSession().execute("SET NAMES utf8mb4 COLLATE 'utf8mb4_unicode_ci'")
+            self.DBSession().execute("SET CHARACTER SET utf8mb4")
 
     def createDatabase(self, drop=False, update=False):
         if drop:
