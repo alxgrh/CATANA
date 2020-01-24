@@ -106,3 +106,8 @@ sympy-plots-for-*.tex/
 tasks.json
 
 *.pyc
+
+# Eclipse IDE related
+.project
+.pydevproject
+.settings
