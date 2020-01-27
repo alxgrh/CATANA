@@ -69,6 +69,23 @@ After that a bash is opened and the CATANA repository residing in /catana can be
 
 The Docker image can also be compiled by hand using the Dockerfile residing in this repository.
 
+#### Alternative way with docker-compose
+
+There are two containers defined in docker-compose.yml:
+
+- MySQL database
+- CATANA repo
+
+to bring them up run:
+```
+docker-compose up -d
+```
+
+to get shell in the CATANA container run:
+
+```
+docker exec -it catana
+```
 
 
 ### By Hand
