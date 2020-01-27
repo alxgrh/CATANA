@@ -14,6 +14,8 @@ services:
     image: catana
     volumes:
       - .:/catana
+    env_file:
+      - ./docker/app.env
     container_name: catana
     depends_on:
       - db
@@ -32,4 +34,3 @@ services:
       - "33306:3306"
     networks:
       catana:
- 
