@@ -32,7 +32,7 @@ from __future__ import unicode_literals
 from ytDownloader import ytDownloader
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
-from database import *
+from catana.database import *
 from sqlalchemy import exists
 
 import pickle
