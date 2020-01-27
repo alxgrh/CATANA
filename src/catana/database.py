@@ -164,7 +164,8 @@ class YTDatabase(object):
             self.engine = create_engine('{0}://{1}:{2}@{3}:{4}/{5}'.format(DB_ENGINE, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME))
         elif DB_ENGINE == 'mysql':
             self.engine = create_engine('{0}://{1}:{2}@{3}:{4}/{5}?charset=utf8mb4'.format(DB_ENGINE, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME), encoding='utf-8', convert_unicode=True)
-
+        elif DB_ENGINE == 'sqlite':
+            engine = create_engine('{0}://{1}'.format(DB_ENGINE,DB_NAME))
         Base.metadata.bind = self.engine
         self.DBSession = sessionmaker(bind = self.engine)
         self.createDatabase()
@@ -306,7 +307,7 @@ class YTDatabase(object):
     def enqueueVideo(self, videoItem):
         with self._session_scope(True) as session:
             videoQ = VideoFeatureQueue(
-                videoID=videoItem['id'],
+                id=videoItem['id'],
                 state='new')
             session.add(videoQ)
 
