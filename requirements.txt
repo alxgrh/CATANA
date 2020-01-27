@@ -12,3 +12,4 @@ scrapy
 sqlalchemy
 guppy3
 hdbscan
+mysqlclient
