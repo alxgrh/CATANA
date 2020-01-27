@@ -30,7 +30,8 @@ import time
 from datetime import datetime
 
 from youtubeAPICrawler.items import *
-from youtubeAPICrawler.database import *
+from catana.database import *
+from catana import settings # YOUTUBE_API_KEY, YOUTUBE_CHANNEL_LIST
 
 
 class UpdateYTSpider(scrapy.Spider):
@@ -46,7 +47,7 @@ class UpdateYTSpider(scrapy.Spider):
 
     allowed_domains = ["www.googleapis.com"]
 
-    YOUTUBE_API_KEY = 'X'
+    YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY
     YOUTUBE_API_CHANNEL_URL = 'https://www.googleapis.com/youtube/v3/channels'
     YOUTUBE_API_VIDEO_URL = 'https://www.googleapis.com/youtube/v3/videos'
     YOUTUBE_API_PLAYLISTITEMS_URL = 'https://www.googleapis.com/youtube/v3/playlistItems'  
@@ -139,6 +140,7 @@ class UpdateYTSpider(scrapy.Spider):
         for video in jsonresponse['items']:
             newVideosIDATE[video['contentDetails']['videoId']]=video['contentDetails']['videoPublishedAt']
             newVideos.append(video['contentDetails']['videoId'] )
+
 
         diff = set(newVideos).difference(oldVideos)
         if diff:

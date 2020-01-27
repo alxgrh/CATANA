@@ -30,6 +30,11 @@ class PopulateDatabasePipeline(object):
             self.db.addChannelEntry(item)
         elif isinstance(item, VideoListItem):
             self.db.updateLatestUploads(item)
+        elif isinstance(item, VideoItem):
+            self.db.addVideoEntry(item)
+            self.db.enqueueVideo(item)
+        elif isinstance(item, VideoStatisticsItem):
+            self.db.addVideoHistoryEntry(item)
 
 class FilterChannelItemsPipeline(object):
     
@@ -55,7 +60,7 @@ class UpdateDatabasePipeline(object):
     
     def __init__(self):
         # init, open existing database
-        from youtubeAPICrawler import database
+        from catana import database
         self.db = database.YTDatabase()
 
     def open_spider(self, spider):

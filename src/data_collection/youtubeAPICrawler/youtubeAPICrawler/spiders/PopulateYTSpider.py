@@ -69,6 +69,8 @@ class PopulateYTSpider(scrapy.Spider):
     YOUTUBE_API_CHANNEL_URL = 'https://www.googleapis.com/youtube/v3/channels'
     YOUTUBE_API_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search'
     YOUTUBE_API_PLAYLISTITEMS_URL = 'https://www.googleapis.com/youtube/v3/playlistItems'  
+    YOUTUBE_API_VIDEO_URL = 'https://www.googleapis.com/youtube/v3/videos'
+
 
     '''
     @classmethod
@@ -187,6 +189,54 @@ class PopulateYTSpider(scrapy.Spider):
             videoList.append(video['contentDetails']['videoId'])
 
         yield VideoListItem(channelID=response.meta['channelID'], videoIDs=videoList)
+
+        # Add videos to the database
+        for video in videoList:
+            request = scrapy.Request(url=self.generate_newvideo_request(video), callback=self.parseNewVideo)
+            request.meta['videoID'] = video
+            yield request
+
+    def parseNewVideo(self, response):
+
+        jsonresponse = json.loads(response.body) # change body to text, if encoding issues
+
+        if not jsonresponse["items"]:
+            logging.info("Empty video item response for new video:"+response.meta['videoID'])
+            return
+
+        if not 'snippet' in jsonresponse["items"][0] and not 'contentDetails' in jsonresponse["items"][0] and\
+        not 'statistics' in jsonresponse["items"][0]:
+            logging.info("Missing parts in video response for new video.")
+            return
+
+        if not 'topicDetails' in jsonresponse["items"][0]:
+            topicIds = []
+        else:
+            topicIds = jsonresponse["items"][0]["topicDetails"]["topicIds"] if "topicIds" in jsonresponse["items"][0]["topicDetails"] else []
+
+        # TODO check if diff method is really sufficient for new video filter
+        # TODO check if parts present, set defaults else
+        yield  VideoItem(
+                id = jsonresponse["items"][0]["id"],
+                channelID = jsonresponse["items"][0]["snippet"]["channelId"],
+                title = jsonresponse["items"][0]["snippet"]["title"],
+                description = jsonresponse["items"][0]["snippet"]["description"],
+                category = jsonresponse['items'][0]['snippet']["categoryId"],
+                duration = jsonresponse['items'][0]['contentDetails']["duration"],
+                dateAdded = jsonresponse['items'][0]['snippet']["publishedAt"],
+                tags = jsonresponse["items"][0]["snippet"]["tags"] if "tags" in jsonresponse["items"][0]["snippet"] else [],
+                topicIds = topicIds,
+                crawlTimestamp = time.strftime('%Y-%m-%d %H:%M:%S') 
+            )
+
+        yield  VideoStatisticsItem(
+                id = jsonresponse["items"][0]["id"],
+                viewCount = jsonresponse["items"][0]["statistics"]["viewCount"],
+                commentCount = jsonresponse["items"][0]["statistics"]["commentCount"] if "commentCount" in jsonresponse["items"][0]["statistics"] else 0,
+                likeCount = jsonresponse["items"][0]["statistics"]["likeCount"] if "likeCount" in jsonresponse["items"][0]["statistics"] else 0,
+                dislikeCount = jsonresponse['items'][0]['statistics']["dislikeCount"] if "dislikeCount" in jsonresponse["items"][0]["statistics"] else 0,
+                crawlTimestamp = time.strftime('%Y-%m-%d %H:%M:%S') 
+            )
         
 
     def generate_channel_request(self, channelID):
@@ -200,4 +250,12 @@ class PopulateYTSpider(scrapy.Spider):
         # the playlistitems list is date order it seems, so in the first request should be the 50th newest videos
         return '{0}?key={1}&playlistId={2}&part=contentDetails&maxResults=50'\
                 .format(self.YOUTUBE_API_PLAYLISTITEMS_URL, self.YOUTUBE_API_KEY, playlistID)
+
+
+    def generate_newvideo_request(self, videoID):
+        # costs: ~9 points
+        return '{0}?key={1}&id={2}&part=contentDetails,statistics,snippet,topicDetails&fields=items(id,statistics,topicDetails,contentDetails,snippet(publishedAt,channelId,title,tags,description,categoryId))'\
+                .format(self.YOUTUBE_API_VIDEO_URL, self.YOUTUBE_API_KEY, videoID)
+
+
     
