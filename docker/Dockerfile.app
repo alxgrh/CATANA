@@ -74,6 +74,7 @@ RUN apt-get install -y \
 	rm -rf /var/lib/apt/lists/*
 
 RUN  apt-get update && apt-get install -y \
+		cython cython3 \
 		python-nose python3-nose \
 		python-h5py python3-h5py \
 		python-skimage python3-skimage \
@@ -87,13 +88,12 @@ RUN  apt-get update && apt-get install -y \
 	rm -rf /var/lib/apt/lists/*
 
 # OpenCV and Dlib related packages
-
-RUN apt-get update && apt-get install -y python3-opencv libdlib18 libdlib-dev libdlib-data
+RUN apt-get update && apt-get install -y python3-opencv 
 
 RUN pip3 install numpy scipy matplotlib scikit-image scikit-learn ipython
-
 RUN pip3 --no-cache-dir install -r requirements.txt
 
-CMD ["/bin/bash"]
+RUN pip3 install -U /catana/src 
 
+CMD ["/bin/sleep", "infinity"]
 
