@@ -87,6 +87,7 @@ to get shell in the CATANA container run:
 docker exec -it catana bash
 ```
 
+Database credentials and Youtube API keys could be set up within environment variables in docker/*env files. 
 
 ### By Hand
 
