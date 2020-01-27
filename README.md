@@ -84,7 +84,7 @@ docker-compose up -d
 to get shell in the CATANA container run:
 
 ```
-docker exec -it catana
+docker exec -it catana bash
 ```
 
 
