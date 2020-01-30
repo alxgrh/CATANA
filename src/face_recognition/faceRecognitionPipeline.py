@@ -27,6 +27,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import print_function
 import os
 import time
 from shutil import copy
@@ -37,7 +38,8 @@ from guppy import hpy
 
 import cv2
 import numpy as np
-from scipy import misc
+#from scipy import misc
+from skimage.transform import resize as imresize 
 import tensorflow as tf
 import math
 
@@ -93,18 +95,18 @@ class FaceRecognitionPipeline(object):
             video = cv2.VideoCapture(videoPath) # Open video with opencv
 
             if video.isOpened():
-                frame_width = video.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)
-                frame_height = video.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)
-                frame_num = video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
-                frame_rate = video.get(cv2.cv.CV_CAP_PROP_FPS)
+                frame_width = video.get(cv2.CAP_PROP_FRAME_WIDTH)
+                frame_height = video.get(cv2.CAP_PROP_FRAME_HEIGHT)
+                frame_num = video.get(cv2.CAP_PROP_FRAME_COUNT)
+                frame_rate = video.get(cv2.CAP_PROP_FPS)
 
                 frame_sec = int(frame_num / frame_rate)
                 face_size = int( 1.0/6.0 * frame_height) # for height 360 thats 60
 
-                print frame_width,'x',frame_height
-                print frame_num,'@', frame_rate
-                print frame_sec,'s'
-                print 'face size:', face_size
+                print (frame_width,'x',frame_height)
+                print (frame_num,'@', frame_rate)
+                print (frame_sec,'s')
+                print ('face size:', face_size)
 
                 self.minsize = face_size
 
@@ -127,7 +129,7 @@ class FaceRecognitionPipeline(object):
                 _, cluster_cls = hdbscan_cluster(features, min_cluster_size=self.min_cluster_size, min_samples=self.min_sample_size, metric='euclidean')
 
                 if len(cluster_cls) <= 1: # Only -1 noise cluster found
-                    print 'DBSCAN FALLBACK'
+                    print ('DBSCAN FALLBACK')
                     _, cluster_cls = dbscan_cluster(features, eps=0.7, min_samples=self.min_cluster_size, metric='euclidean')
 
 
@@ -152,15 +154,15 @@ class FaceRecognitionPipeline(object):
                         feature = np.array(feature, copy=False)
                         classes.append((duration, feature))
             else:
-                print 'FaceRecognitionPipeline::getFeaturesFromVideo: Video could not be opened'
+                print ('FaceRecognitionPipeline::getFeaturesFromVideo: Video could not be opened')
                 classes = None
                 video.release()
                 gc.collect()
 
         except Exception as e:
-            print 'FaceRecognitionPipeline::getFeaturesFromVideo: catched exception'
-            print e
-            print traceback.print_exc()
+            print ('FaceRecognitionPipeline::getFeaturesFromVideo: catched exception')
+            print (e)
+            print (traceback.print_exc())
             classes = None
         
         return classes
@@ -176,7 +178,7 @@ class FaceRecognitionPipeline(object):
 
     def classesToDir(self, out_dir, name, classes):
         dir_name = os.path.join(out_dir, name)
-        print dir_name
+        print (dir_name)
         os.mkdir(dir_name)
         if type(classes) is dict:
             classes = [item[1] for item in classes.items()]
@@ -196,19 +198,19 @@ class FaceRecognitionPipeline(object):
         # We combined every step into one function to lower memory consumption by not accumulating all frames for every next step
 
         # metricFn is function for selecting frame indices
-        frame_num = video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
-        frame_rate = video.get(cv2.cv.CV_CAP_PROP_FPS)
+        frame_num = video.get(cv2.CAP_PROP_FRAME_COUNT)
+        frame_rate = video.get(cv2.CAP_PROP_FPS)
 
         slength = int(frame_num / frame_rate)
 
         indices = metricFn(frame_num, slength)
         start = time.time()
-        print 'Extracting indices', len(indices)
+        print ('Extracting indices', len(indices))
 
         alignedFrames = []
         features = []
         for i in indices:
-            video.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, i) # sets video pointer to frame i
+            video.set(cv2.CAP_PROP_POS_FRAMES, i) # sets video pointer to frame i
             ret, frame = video.read() # reads frame 
             if ret:
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -234,7 +236,8 @@ class FaceRecognitionPipeline(object):
                         #if self._sum_of_magnitude(gray) < self.sharpness_threshold:
                         #    discarded +=1
                         #    continue  # if the cropped image is blurred, discard
-                        scaled = misc.imresize(cropped, (self.image_size, self.image_size), interp='bilinear')
+                        #scaled = misc.imresize(cropped, (self.image_size, self.image_size), interp='bilinear')
+                        scaled = imresize(cropped, (self.image_size, self.image_size), order=1)
                         #scaled = cv2.resize(cropped, (self.image_size, self.image_size))
 
                         scaled = self._preprocess(scaled) # PREWHITEN ETC
@@ -280,25 +283,25 @@ class FaceRecognitionPipeline(object):
         #print total_size(features)
 
         processTime = time.time() - start
-        print 'feature extraction took', processTime, 's, found', len(features)
+        print ('feature extraction took', processTime, 's, found', len(features))
 
         return features
 
 
     def _extractFrames(self, video, metricFn):
         # metricFn is function for selecting frame indices
-        frame_num = video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
-        frame_rate = video.get(cv2.cv.CV_CAP_PROP_FPS)
+        frame_num = video.get(cv2.CAP_PROP_FRAME_COUNT)
+        frame_rate = video.get(cv2.CAP_PROP_FPS)
 
         slength = int(frame_num / frame_rate)
 
         indices = metricFn(frame_num, slength)
         start = time.time()
-        print 'Extracting indices', len(indices)
+        print ('Extracting indices', len(indices))
 
         frames = []
         for i in indices:
-            video.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, i) # sets video pointer to frame i
+            video.set(cv2.CAP_PROP_POS_FRAMES, i) # sets video pointer to frame i
             ret, frame = video.read() # reads frame 
             if ret:
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -306,8 +309,8 @@ class FaceRecognitionPipeline(object):
                 frames.append((i, frame))
                 
         processTime = time.time() - start
-        print 'frame extraction took', processTime, 's ,', len(frames), 'frames'
-        print 'frames size: ', sys.getsizeof(frames)
+        print ('frame extraction took', processTime, 's ,', len(frames), 'frames')
+        print ('frames size: ', sys.getsizeof(frames))
         return frames
     
 
@@ -338,7 +341,8 @@ class FaceRecognitionPipeline(object):
                     #if self._sum_of_magnitude(gray) < self.sharpness_threshold:
                     #    discarded +=1
                     #    continue  # if the cropped image is blurred, discard
-                    scaled = misc.imresize(cropped, (self.image_size, self.image_size), interp='bilinear')
+                    #scaled = misc.imresize(cropped, (self.image_size, self.image_size), interp='bilinear')
+                    scaled = imresize(cropped, (self.image_size, self.image_size), order=1)
                     #scaled = cv2.resize(cropped, (self.image_size, self.image_size))
 
                     scaled = self._preprocess(scaled) # PREWHITEN ETC
@@ -346,7 +350,7 @@ class FaceRecognitionPipeline(object):
                     #misc.imsave(os.path.join(out_dir, 'test{}_{}.png'.format(i, j)), scaled)
 
         processTime = time.time() - start
-        print 'face detection for', len(frames), 'took', processTime, 's, ~', processTime/len(frames),'s; found',len(alignedFrames)
+        print ('face detection for', len(frames), 'took', processTime, 's, ~', processTime/len(frames),'s; found',len(alignedFrames))
 
         return alignedFrames
 
@@ -410,6 +414,6 @@ class FaceRecognitionPipeline(object):
                 features = [(i, j, e) for (i, j, f), e in zip(alignedFrames, emb)]
 
         processTime = time.time() - start
-        print 'feature extraction for', len(alignedFrames), 'took', processTime, 's, ~', processTime/len(alignedFrames)
+        print ('feature extraction for', len(alignedFrames), 'took', processTime, 's, ~', processTime/len(alignedFrames))
         return features
     
