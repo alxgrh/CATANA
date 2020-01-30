@@ -22,10 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 import youtube_dl
-
 from youtube_dl.utils import ContentTooShortError
+
+from facePostProcessor import FacePostProcessorPP
+# Monkey patch youtube_dl module with custom postprocessor
+youtube_dl.postprocessor.FacePostProcessorPP = FacePostProcessorPP
+
 
 import os
 import sys
@@ -113,15 +117,15 @@ class ytDownloader(object):
             with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
                 ydl.download([url])
         except Exception as e:
-            print 'ytDownloader::download: catched exception'
-            print e
-            print traceback.print_exc()
+            print ('ytDownloader::download: catched exception')
+            print (e)
+            print (traceback.print_exc())
 
     def youtube_dl_hook(self, d):
         if d['status'] == 'finished':
             self.callback(d)
         elif d['status'] == 'error':
-            print 'YOUTUBE_DL ERROR: youtube_dl_hook reported error.'
+            print ('YOUTUBE_DL ERROR: youtube_dl_hook reported error.')
     
 
 
