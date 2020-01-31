@@ -9,7 +9,7 @@ DB_PORT = os.environ.get( 'CATANA_DB_PORT' , '33306')
 DB_ENGINE = os.environ.get( 'CATANA_DB_ENGINE' , 'mysql')
 
 YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY', 'AIzaSyDda_-kZe4i0U_gUwoFkHmlG8UAIUv2c1o')
-
+YOUTUBE_API_KEY_LIST = os.environ.get('YOUTUBE_API_KEY_LIST', 'youtube_api_keys.json')
 YOUTUBE_CHANNEL_LIST =  os.environ.get('YOUTUBE_CHANNEL_LIST', 'test_channels.json')
 
-DATA_STORAGE_PATH = os.environ.get('DATA_STORAGE_PATH', '/media/data_storage')
+DATA_STORAGE_PATH = os.environ.get('DATA_STORAGE_PATH', '/media/data')

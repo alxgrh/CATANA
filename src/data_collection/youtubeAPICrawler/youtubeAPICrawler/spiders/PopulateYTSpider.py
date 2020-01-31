@@ -29,6 +29,9 @@ import urllib
 import json
 import time
 import shlex
+import itertools
+import random
+import os
 
 def quoteSplit(value):
     lex = shlex.shlex(value)
@@ -64,6 +67,9 @@ class PopulateYTSpider(scrapy.Spider):
     MAX_SEARCH_DEPTH = 0 # Crawl the related channel of our provided channel
 
     YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY
+    YOUTUBE_API_KEYS = []
+    YOUTUBE_API_KEY_LIST = settings.YOUTUBE_API_KEY_LIST
+
     YOUTUBE_CHANNEL_LIST = settings.YOUTUBE_CHANNEL_LIST
 
     YOUTUBE_API_CHANNEL_URL = 'https://www.googleapis.com/youtube/v3/channels'
@@ -72,6 +78,8 @@ class PopulateYTSpider(scrapy.Spider):
     YOUTUBE_API_VIDEO_URL = 'https://www.googleapis.com/youtube/v3/videos'
 
 
+    def get_api_key(self):
+        return random.choice(self.YOUTUBE_API_KEYS)
     '''
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -90,6 +98,15 @@ class PopulateYTSpider(scrapy.Spider):
         '''
         urls = []
 
+        # Generate API keys list
+        if os.path.isfile(self.YOUTUBE_API_KEY_LIST):
+            with open(self.YOUTUBE_API_KEY_LIST) as api_keys:
+                for key in json.load(api_keys):
+                    sels.YOUTUBE_API_KEYS.append(key)
+        else:
+            self.YOUTUBE_API_KEYS.append(self.YOUTUBE_API_KEY)
+
+        # Generate channels list
         with open(self.YOUTUBE_CHANNEL_LIST) as IDs:
             for id in json.load(IDs):
                 urls.append(self.generate_channel_request(id))
@@ -242,20 +259,20 @@ class PopulateYTSpider(scrapy.Spider):
     def generate_channel_request(self, channelID):
         # costs: 11points
         return '{0}?key={1}&id={2}&part=brandingSettings,statistics,contentDetails,snippet,topicDetails&fields=items(id,statistics,topicDetails,snippet(publishedAt),brandingSettings(channel(title,description,keywords,featuredChannelsTitle,featuredChannelsUrls,unsubscribedTrailer)),contentDetails(relatedPlaylists(uploads)))'\
-                .format(self.YOUTUBE_API_CHANNEL_URL, self.YOUTUBE_API_KEY, channelID)
+                .format(self.YOUTUBE_API_CHANNEL_URL, self.get_api_key(), channelID)
 
     def generate_playlistitems_request(self, playlistID):
         # costs: 3points
         # rather than search for videos in a certain time (1day here), grab the list of uploaded videos on first day, and every added video at the next day in the list is new
         # the playlistitems list is date order it seems, so in the first request should be the 50th newest videos
         return '{0}?key={1}&playlistId={2}&part=contentDetails&maxResults=50'\
-                .format(self.YOUTUBE_API_PLAYLISTITEMS_URL, self.YOUTUBE_API_KEY, playlistID)
+                .format(self.YOUTUBE_API_PLAYLISTITEMS_URL, self.get_api_key(), playlistID)
 
 
     def generate_newvideo_request(self, videoID):
         # costs: ~9 points
         return '{0}?key={1}&id={2}&part=contentDetails,statistics,snippet,topicDetails&fields=items(id,statistics,topicDetails,contentDetails,snippet(publishedAt,channelId,title,tags,description,categoryId))'\
-                .format(self.YOUTUBE_API_VIDEO_URL, self.YOUTUBE_API_KEY, videoID)
+                .format(self.YOUTUBE_API_VIDEO_URL, self.get_api_key(), videoID)
 
 
     
