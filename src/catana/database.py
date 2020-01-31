@@ -125,7 +125,7 @@ class VideoFeatures(Base):
 
     id = Column(Integer, primary_key=True)
     videoID = Column(String(11), ForeignKey('video.id', ondelete="CASCADE"))
-    feature = Column(LargeBinary) # correct datatype for numpy/pandas array? test
+    feature = Column(LargeBinary(length = 2**24-1)) # correct datatype for numpy/pandas array? test
     duration = Column(Float) # correct datatype for numpy/pandas array? test
 
     cluster = relationship('VideoFaceCluster', cascade='delete')
