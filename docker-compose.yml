@@ -3,6 +3,9 @@ version: "3.7"
 volumes:
   db_datadir:
 
+volumes:
+  app_datadir:
+
 networks:
   catana:
 
@@ -14,6 +17,7 @@ services:
     image: catana:dev
     volumes:
       - .:/catana
+      - app_datadir:/media/data
     env_file:
       - ./docker/app.env
     container_name: catana
