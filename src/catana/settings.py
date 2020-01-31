@@ -11,3 +11,5 @@ DB_ENGINE = os.environ.get( 'CATANA_DB_ENGINE' , 'mysql')
 YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY', 'AIzaSyDda_-kZe4i0U_gUwoFkHmlG8UAIUv2c1o')
 
 YOUTUBE_CHANNEL_LIST =  os.environ.get('YOUTUBE_CHANNEL_LIST', 'test_channels.json')
+
+DATA_STORAGE_PATH = os.environ.get('DATA_STORAGE_PATH', '/media/data_storage')

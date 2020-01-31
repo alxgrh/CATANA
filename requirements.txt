@@ -13,3 +13,6 @@ sqlalchemy
 guppy3
 hdbscan
 mysqlclient
+youtube-dl
+facenet
+scikit-image

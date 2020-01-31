@@ -72,7 +72,7 @@ class FeaturedChannel(Base):
     __tablename__ = 'channel_featured'
 
     id = Column(Integer, primary_key=True)
-    channelID = Column(String(24), ForeignKey('channel.id'))
+    channelID = Column(String(24), ForeignKey('channel.id', ondelete="CASCADE"))
     featuredChannelID = Column(String(24))
 
 
@@ -80,7 +80,7 @@ class ChannelHistory(Base):
     __tablename__ = 'channel_history'
 
     id = Column(Integer, primary_key=True)
-    channelID = Column(String(24), ForeignKey('channel.id'))
+    channelID = Column(String(24), ForeignKey('channel.id', ondelete="CASCADE"))
     viewCount = Column(BigInteger, nullable=False)
     subscriberCount = Column(Integer, nullable=False)
     commentCount = Column(Integer, nullable=False)
@@ -92,7 +92,7 @@ class Video(Base):
     __tablename__ = 'video'
 
     id = Column(String(11), primary_key=True) # string may not work, use other then
-    channelID = Column(String(24), ForeignKey('channel.id'))
+    channelID = Column(String(24), ForeignKey('channel.id', ondelete="CASCADE"))
     title = Column(Unicode(300), nullable=False)
     description = Column(UnicodeText, nullable=False) # max ~5000 characters actually
     category = Column(Integer, nullable=False)
@@ -112,7 +112,7 @@ class VideoHistory(Base):
     __tablename__ = 'video_history'
 
     id = Column(Integer, primary_key=True)
-    videoID = Column(String(11), ForeignKey('video.id'))
+    videoID = Column(String(11), ForeignKey('video.id', ondelete="CASCADE"))
     viewCount = Column(Integer, nullable=False)
     commentCount = Column(Integer, nullable=False)
     likeCount = Column(Integer, nullable=False)
@@ -124,7 +124,7 @@ class VideoFeatures(Base):
     __tablename__ = 'video_features'
 
     id = Column(Integer, primary_key=True)
-    videoID = Column(String(11), ForeignKey('video.id'))
+    videoID = Column(String(11), ForeignKey('video.id', ondelete="CASCADE"))
     feature = Column(LargeBinary) # correct datatype for numpy/pandas array? test
     duration = Column(Float) # correct datatype for numpy/pandas array? test
 
@@ -135,7 +135,7 @@ class VideoFaceCluster(Base):
     __tablename__ = 'video_face_cluster'
 
     id = Column(Integer, primary_key=True)
-    featureID = Column(Integer, ForeignKey('video_features.id'))
+    featureID = Column(Integer, ForeignKey('video_features.id', ondelete="CASCADE"))
     cluster = Column(Integer)
 
 
