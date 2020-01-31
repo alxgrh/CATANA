@@ -102,7 +102,7 @@ class PopulateYTSpider(scrapy.Spider):
         if os.path.isfile(self.YOUTUBE_API_KEY_LIST):
             with open(self.YOUTUBE_API_KEY_LIST) as api_keys:
                 for key in json.load(api_keys):
-                    sels.YOUTUBE_API_KEYS.append(key)
+                    self.YOUTUBE_API_KEYS.append(key)
         else:
             self.YOUTUBE_API_KEYS.append(self.YOUTUBE_API_KEY)
 
