@@ -12,18 +12,22 @@ from facenet.src import facenet
 
 fileDir = os.path.dirname(os.path.realpath(__file__))
 
-facenetDir = os.path.join(fileDir, 'facenet')
+facenetDir = os.path.join(fileDir, 'models', 'facenet')
 #facenetModelDir = os.path.join(facenetDir, 'models', '20161116-234200')
 #facenetModelDir = os.path.join(facenetDir, 'models', '20170117-215115')
 #facenetModelDir = os.path.join(facenetDir, 'models', '20170216-091149')
 #frozen_graph_filename = os.path.join(facenetDir, 'models', '20161116-234200.pb')
-frozen_graph_filename = os.path.join(facenetDir, 'models', '20170117-215115.pb')
+#frozen_graph_filename = os.path.join(facenetDir, 'models', '20170117-215115.pb')
 #frozen_graph_filename = os.path.join(facenetDir, 'models', '20170216-091149.pb2')
 
+# 2020
+#frozen_graph_filename = os.path.join(facenetDir, 'CASIA-WebFace', '20180408-102900.pb')
+#frozen_graph_filename = os.path.join(facenetDir, 'VGGFace2', '20180402-114759.pb')
+frozen_graph_filename = os.path.join(facenetDir, '20170117-215115.pb')
 
 def load_graph(frozen_graph_filename):
-    with tf.gfile.GFile(frozen_graph_filename, "rb") as f:
-        graph_def = tf.GraphDef()
+    with tf.io.gfile.GFile(frozen_graph_filename, "rb") as f:
+        graph_def = tf.compat.v1.GraphDef()
         graph_def.ParseFromString(f.read())
 
     with tf.Graph().as_default() as graph:
@@ -44,7 +48,7 @@ graph = None
 
 #graph = tf.Graph()
 graph = load_graph(frozen_graph_filename)
-session = tf.Session(graph=graph) #config=tf.ConfigProto(inter_op_parallelism_threads=24, intra_op_parallelism_threads=24))
+session = tf.compat.v1.Session(graph=graph) #config=tf.ConfigProto(inter_op_parallelism_threads=24, intra_op_parallelism_threads=24))
 with graph.as_default():
     with session.as_default():
         # Load the model

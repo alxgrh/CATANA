@@ -38,7 +38,6 @@ from guppy import hpy
 
 import cv2
 import numpy as np
-#from scipy import misc
 from skimage.transform import resize as imresize 
 import tensorflow as tf
 import math
@@ -236,7 +235,6 @@ class FaceRecognitionPipeline(object):
                         #if self._sum_of_magnitude(gray) < self.sharpness_threshold:
                         #    discarded +=1
                         #    continue  # if the cropped image is blurred, discard
-                        #scaled = misc.imresize(cropped, (self.image_size, self.image_size), interp='bilinear')
                         scaled = imresize(cropped, (self.image_size, self.image_size), order=1)
                         #scaled = cv2.resize(cropped, (self.image_size, self.image_size))
 
@@ -248,8 +246,8 @@ class FaceRecognitionPipeline(object):
                     with self.session.graph.as_default():
                         with self.session.as_default():
                             # Get input and output tensors
-                            images_placeholder = tf.get_default_graph().get_tensor_by_name("resnet/input:0")
-                            embeddings = tf.get_default_graph().get_tensor_by_name("resnet/embeddings:0")
+                            images_placeholder = tf.compat.v1.get_default_graph().get_tensor_by_name("resnet/input:0")
+                            embeddings = tf.compat.v1.get_default_graph().get_tensor_by_name("resnet/embeddings:0")
                             #phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("resnet/phase_train:0")
 
                             imgs = np.array([f for (i, j, f) in alignedFrames], copy=False)
@@ -265,7 +263,7 @@ class FaceRecognitionPipeline(object):
             with self.session.graph.as_default():
                 with self.session.as_default():
                     # Get input and output tensors
-                    images_placeholder = tf.get_default_graph().get_tensor_by_name("resnet/input:0")
+                    images_placeholder = tf.compat.v1.get_default_graph().get_tensor_by_name("resnet/input:0")
                     embeddings = tf.get_default_graph().get_tensor_by_name("resnet/embeddings:0")
                     #phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("resnet/phase_train:0")
 
@@ -341,13 +339,11 @@ class FaceRecognitionPipeline(object):
                     #if self._sum_of_magnitude(gray) < self.sharpness_threshold:
                     #    discarded +=1
                     #    continue  # if the cropped image is blurred, discard
-                    #scaled = misc.imresize(cropped, (self.image_size, self.image_size), interp='bilinear')
                     scaled = imresize(cropped, (self.image_size, self.image_size), order=1)
                     #scaled = cv2.resize(cropped, (self.image_size, self.image_size))
 
                     scaled = self._preprocess(scaled) # PREWHITEN ETC
                     alignedFrames.append((i, j, scaled))
-                    #misc.imsave(os.path.join(out_dir, 'test{}_{}.png'.format(i, j)), scaled)
 
         processTime = time.time() - start
         print ('face detection for', len(frames), 'took', processTime, 's, ~', processTime/len(frames),'s; found',len(alignedFrames))

@@ -38,6 +38,8 @@ import FacenetModel
 import MtcnnModel
 import traceback
 
+from catana.settings import DATA_STORAGE_PATH
+
 fileDir = os.path.dirname(os.path.realpath(__file__))
 storageDir = '/media/dataStorage/facegraph/'
 
@@ -82,7 +84,7 @@ class ytDownloader(object):
 
     callback = None
 
-    output_dir = 'tmp' # TODO use media/datastorage for video storage, even though its just temporary saved
+    output_dir =os.path.join(DATA_STORAGE_PATH, 'tmp') # TODO use media/datastorage for video storage, even though its just temporary saved
     file_template = '%(id)s.%(ext)s' 
 
     output_path = os.path.join(output_dir, file_template)

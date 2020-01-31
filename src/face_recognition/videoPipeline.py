@@ -28,7 +28,7 @@
 # SOFTWARE.
 
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 from ytDownloader import ytDownloader
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
@@ -43,7 +43,7 @@ import time
 
 
 DIR = '../../data/'
-NUM_THREADS = 24
+NUM_THREADS = 2
 CATEGORY_FILTER = [20] # a filter for video selection, category 20=Gaming
 
 
@@ -70,8 +70,8 @@ with db._session_scope(False) as session:
             if not session.query(exists().where(VideoFeatures.videoID==v.id)).scalar() and not v.deleted and not int(v.category) in CATEGORY_FILTER:
                 videoIDs.append(v.id)
 
-print 'Found {} videos.'.format(len(videoIDs))
- ytd = ytDownloader(callback=callback)
+print ('Found {} videos.'.format(len(videoIDs)))
+ytd = ytDownloader(callback=callback)
 
 videoURLs = ['https://www.youtube.com/watch?v={}'.format(id) for id in videoIDs]
 

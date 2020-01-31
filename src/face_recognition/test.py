@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 from ytDownloader import ytDownloader
 from threading import Thread
+
 
 import gc
 
@@ -11,10 +12,13 @@ from concurrent.futures import ThreadPoolExecutor
 gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
 
 def callback(d):
-    print 'CALLBACK: video finished', d['filename']
+    print('CALLBACK: video finished', d['filename'])
 
+#original
+#test = ['https://www.youtube.com/watch?v=nlg_tQ3aWxE']
 
-test = ['https://www.youtube.com/watch?v=nlg_tQ3aWxE']
+#2020
+test = ['https://www.youtube.com/watch?v=ogC1XQjBUfE']
 
 ytd = ytDownloader(callback)
 

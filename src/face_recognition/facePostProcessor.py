@@ -28,17 +28,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 from youtube_dl.postprocessor.common import PostProcessor
 from youtube_dl.utils import PostProcessingError
 
 import os
 import time
-import cPickle as cp
+import pickle as cp
 
 import gc
 
-from database import *
+from catana.database import *
 
 from faceRecognitionPipeline import FaceRecognitionPipeline
 
@@ -59,7 +59,7 @@ class FacePostProcessorPP(PostProcessor):
 
     #@profile
     def run(self, information):
-        print 'start POSTPROCESS: ', information['filepath']
+        print ('start POSTPROCESS: ', information['filepath'])
         start = time.time()
 
 
@@ -78,7 +78,7 @@ class FacePostProcessorPP(PostProcessor):
             if len(classes) > 0:
                 # write feature classes for video id in database
                 for cls in classes:
-                    session.add(VideoFeatures(videoID=information['id'], duration=cls[0], feature=cp.dumps(cls[1], protocol=2)))
+                    session.add(VideoFeatures(videoID=information['id'], duration=cls[0], feature=cp.dumps(cls[1], protocol=3)))
                     #db.updateQueue(videoID=information['id'], state='completed')
             else:
                 # Empty classes case, write null entry in database to know its already computed (no faces/people were found in video)
@@ -86,7 +86,7 @@ class FacePostProcessorPP(PostProcessor):
                 #db.updateQueue(videoID=information['id'], state='empty')
 
         processTime = time.time() - start
-        print 'end POSTPROCESS: ', information['filepath'], 'took', processTime, '\nresults n_classes', len(classes)
+        print ('end POSTPROCESS: ', information['filepath'], 'took', processTime, '\nresults n_classes', len(classes))
 
         return [information['filepath']], information # first argument are files to be deleted after post process
 
