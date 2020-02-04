@@ -1,6 +1,8 @@
 #!/bin/sh
 
 cd CATANA/
+git checkout devel_2020
+
 export DEBIAN_FRONTEND=noninteractive
 apt-get update > /dev/null
 
