@@ -32,20 +32,20 @@ Detects collaborations of actors from features in db
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 
 import os
 import time
 import numpy as np
 import pandas as pa
-import cPickle as cp
+import pickle as cp
 import json
 
 import math
 
 from threading import Thread
 
-from database import *
+from catana.database import *
 
 from scipy.spatial.distance import cdist, pdist, squareform
 from scipy.stats import describe
@@ -75,7 +75,7 @@ def hdbscan_tests(features, ftype='mean', min_cluster_size=2):
     else:
         D = facedist.mean_dist(features)
 
-    #print D.shape
+    print( D.shape)
 
     db = hdbscan.HDBSCAN(min_cluster_size=min_cluster_size, metric='precomputed').fit(D)
     labels = db.labels_
@@ -174,12 +174,16 @@ with db._session_scope(False) as session:
 
 #ft = ft[ft.duration > 30.0]
 #ft = ft[ft.duration > 28.0]
+
+print(ft.info)
 ft['feature'] = ft['feature'].apply(cp.loads)
+
+print(ft['feature'])
 
 features = ft['feature'].values
 
 processTime = time.time() - start
-print 'data extraction took', processTime, 'for', features.shape
+print ('data extraction took', processTime, 'for', features.shape)
 
 
 start = time.time()
@@ -189,7 +193,7 @@ uqc, hdb_mean_labels, hdb_mean_proba, hdb_mean_pers = hdbscan_tests(features, ft
 
 
 processTime = time.time() - start
-print 'distance computation took', processTime
+print ('distance computation took', processTime)
 
 
 ftos = extend_df(ft.copy(), hdb_mean_labels, hdb_mean_proba, hdb_mean_pers)

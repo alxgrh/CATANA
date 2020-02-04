@@ -2,6 +2,7 @@ from distutils.core import setup
 from Cython.Build import cythonize
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
+import numpy
 
 setup(
   name = "facedist",
@@ -11,7 +12,8 @@ setup(
     Extension("facedist",
               ["facedist.pyx"],
               extra_compile_args = ["-O3", "-fopenmp", "-xAVX"],
-              extra_link_args=['-qopenmp']
+              extra_link_args=['-fopenmp'],
+              include_dirs=[numpy.get_include()]
               )
   ]
 )

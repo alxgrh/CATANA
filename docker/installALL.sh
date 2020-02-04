@@ -1,15 +1,9 @@
+#!/bin/sh
 
-FROM ubuntu:18.04
+export DEBIAN_FRONTEND=noninteractive
+apt-get update > /dev/null
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update
-RUN apt-get -y install tzdata sudo
-
-WORKDIR /catana
-COPY . /catana
-
-RUN apt-get install -y \
+apt-get install -y \
 		bc \
 		build-essential \
 		cmake \
@@ -67,13 +61,13 @@ RUN apt-get install -y \
 		libtbb-dev \
 		libeigen3-dev \
 		python-tk \
-        ffmpeg \
-        && \
+        ffmpeg > /dev/null
+
 	apt-get clean && \
 	apt-get autoremove && \
-	rm -rf /var/lib/apt/lists/*
+	rm -rf /var/lib/apt/lists/* 
 
-RUN  apt-get update && apt-get install -y \
+apt-get update && apt-get install -y \
 		cython cython3 \
 		python-nose python3-nose \
 		python-h5py python3-h5py \
@@ -87,12 +81,11 @@ RUN  apt-get update && apt-get install -y \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
-# OpenCV and Dlib related packages
-RUN apt-get update && apt-get install -y python3-opencv 
+apt-get update && apt-get install -y python3-opencv 
 
-RUN pip3 install numpy scipy matplotlib scikit-image scikit-learn ipython
-RUN pip3 --no-cache-dir install -U -r requirements.txt
+pip3 install numpy scipy matplotlib scikit-image scikit-learn ipython
 
-RUN pip3 install -U /catana/src 
-CMD ["/bin/sleep", "infinity"]
+git clone https://github.com/alxgrh/CATANA > /dev/null
+pip3 --no-cache-dir install -U -r requirements.txt
 
+pip3 install -U ./src 
