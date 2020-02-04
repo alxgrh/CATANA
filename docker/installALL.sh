@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cd CATANA/
 export DEBIAN_FRONTEND=noninteractive
 apt-get update > /dev/null
 
@@ -85,7 +86,6 @@ apt-get update && apt-get install -y python3-opencv
 
 pip3 install numpy scipy matplotlib scikit-image scikit-learn ipython
 
-git clone https://github.com/alxgrh/CATANA > /dev/null
 pip3 --no-cache-dir install -U -r requirements.txt
 
 pip3 install -U ./src 
