@@ -5,6 +5,7 @@ git clone https://github.com/alxgrh/CATANA > /dev/null
 
 cd CATANA/
 git checkout devel_2020
+git pull
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update > /dev/null
