@@ -102,3 +102,8 @@ pip3 uninstall  -qqq tensorflow-gpu
 pip3 install --no-cache-dir -qqq tensorflow-gpu==1.15.0
 
 cd ..
+cd CATANA/src/face_recognition/cython_full
+python3 setup.py install
+
+
+cd -
