@@ -75,8 +75,6 @@ def hdbscan_tests(features, ftype='mean', min_cluster_size=2):
     else:
         D = facedist.mean_dist(features)
 
-    print( D.shape)
-
     db = hdbscan.HDBSCAN(min_cluster_size=min_cluster_size, metric='precomputed').fit(D)
     labels = db.labels_
     probabilities = db.probabilities_
@@ -96,9 +94,12 @@ def dbscan_tests(features, ftype='mean', eps=0.7, min_samples=2):
     elif ftype=='meanmin':
         D = facedist.meanmin_dist(features)
     else:
+        start = time.time()
         D = facedist.mean_dist(features)
+        processTime = time.time() - start
+        print ('distance computation took', processTime)
 
-    #print D.shape
+    print (D.shape)
 
     db = DBSCAN(eps=eps, min_samples=min_samples, metric='precomputed').fit(D)
     labels = db.labels_
@@ -175,16 +176,12 @@ with db._session_scope(False) as session:
 #ft = ft[ft.duration > 30.0]
 #ft = ft[ft.duration > 28.0]
 
-print(ft.info)
 ft['feature'] = ft['feature'].apply(cp.loads)
-
-print(ft['feature'])
 
 features = ft['feature'].values
 
 processTime = time.time() - start
 print ('data extraction took', processTime, 'for', features.shape)
-
 
 start = time.time()
 

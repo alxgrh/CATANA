@@ -43,7 +43,7 @@ import time
 
 
 DIR = '../../data/'
-NUM_THREADS = 2
+NUM_THREADS = 8
 CATEGORY_FILTER = [20] # a filter for video selection, category 20=Gaming
 
 
