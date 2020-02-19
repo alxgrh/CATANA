@@ -1,0 +1,18 @@
+CALLBACK: video finished /home/tmp/tmp/ogC1XQjBUfE.mp4
+start POSTPROCESS:  /home/tmp/tmp/ogC1XQjBUfE.mp4
+640.0 x 360.0
+5499.0 @ 30.0
+183 s
+face size: 60
+Extracting indices 630
+2020-01-31 15:30:25.289854: W tensorflow/core/framework/allocator.cc:107] Allocation of 61440000 exceeds 10% of system memory.
+2020-01-31 15:30:26.592444: W tensorflow/core/framework/allocator.cc:107] Allocation of 159769600 exceeds 10% of system memory.
+2020-01-31 15:30:26.795090: W tensorflow/core/framework/allocator.cc:107] Allocation of 151782400 exceeds 10% of system memory.
+2020-01-31 15:30:27.119901: W tensorflow/core/framework/allocator.cc:107] Allocation of 303564800 exceeds 10% of system memory.
+2020-01-31 15:30:27.702326: W tensorflow/core/framework/allocator.cc:107] Allocation of 73932800 exceeds 10% of system memory.
+WARNING:tensorflow:From /home/aag/CATANA/src/face_recognition/faceRecognitionPipeline.py:267: The name tf.get_default_graph is deprecated. Please use tf.compat.v1.get_default_graph instead.
+
+feature extraction took 58.69347333908081 s, found 396
+end POSTPROCESS:  /home/tmp/tmp/ogC1XQjBUfE.mp4 took 61.514846324920654 
+results n_classes 3
+
