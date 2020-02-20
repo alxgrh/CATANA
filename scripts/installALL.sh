@@ -7,6 +7,8 @@ cd CATANA/
 git checkout devel_2020
 git pull
 
+echo INSTALL GENERAL PACKAGES WITH APT 
+
 export DEBIAN_FRONTEND=noninteractive
 apt-get update > /dev/null
 
@@ -74,6 +76,7 @@ apt-get install -y \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/* 
 
+echo INSTALL CYTHON WITH APT
 apt-get update && apt-get install -y \
 		cython cython3 \
 		python-nose python3-nose \
@@ -88,6 +91,8 @@ apt-get update && apt-get install -y \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
+
+echo INSTALL OPENCV WITH APT
 
 apt-get update && apt-get install -y python3-opencv 
 
@@ -105,18 +110,24 @@ sudo apt-get -o Dpkg::Options::="--force-overwrite" install cuda-10-0 cuda-drive
 wget 'https://www.dropbox.com/s/wttt99al6y3qo2k/libcudnn7_7.6.5.32-1%2Bcuda10.0_amd64.deb'
 dpkg -i libcudnn7_7.6.5.32-1+cuda10.0_amd64.deb 
 
+echo UPGRADE PIP VERSION
+pip3 install --upgrade pip
 
+echo INSTALL numpy scipy matplotlib scikit-image scikit-learn ipython  WITH PIP
 pip3 install numpy scipy matplotlib scikit-image scikit-learn ipython
 
+echo INSTALL CATANA requirements WITH PIP
 pip3 --no-cache-dir install -U -r requirements.txt
 
+echo INSTALL CATANA WITH PIP
 pip3 install -U ./src 
 
-
+echo REINSTALL TENSORFLOW WITH PIP
 pip3 uninstall  -qqq  tensorflow
 pip3 uninstall  -qqq tensorflow-gpu
 pip3 install --no-cache-dir -qqq tensorflow-gpu==1.14.0
 
+echo BUILD CATANA CYTHON MODULE 
 cd ..
 cd CATANA/src/face_recognition/cython_full
 python3 setup.py install
