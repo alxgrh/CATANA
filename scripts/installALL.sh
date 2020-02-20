@@ -88,7 +88,23 @@ apt-get update && apt-get install -y \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
+
 apt-get update && apt-get install -y python3-opencv 
+
+
+echo Install NVIDIA CUDA
+sudo apt-get purge nvidia*
+sudo apt-get autoremove
+sudo apt-get autoclean
+sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" | sudo tee /etc/apt/sources.list.d/cuda.list
+
+sudo apt-get update 
+sudo apt-get -o Dpkg::Options::="--force-overwrite" install cuda-10-0 cuda-drivers
+
+wget 'https://www.dropbox.com/s/wttt99al6y3qo2k/libcudnn7_7.6.5.32-1%2Bcuda10.0_amd64.deb'
+dpkg -i libcudnn7_7.6.5.32-1+cuda10.0_amd64.deb 
+
 
 pip3 install numpy scipy matplotlib scikit-image scikit-learn ipython
 
