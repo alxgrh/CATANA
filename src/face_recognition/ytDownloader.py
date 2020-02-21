@@ -82,6 +82,7 @@ class ytDownloader(object):
 
     '''
 
+    enabled = True
     callback = None
 
     output_dir =os.path.join(DATA_STORAGE_PATH, 'tmp') # TODO use media/datastorage for video storage, even though its just temporary saved
@@ -114,15 +115,16 @@ class ytDownloader(object):
         self.ydl_opts['logger'] = MyLogger('ytDownloader.log', mode=MyLogger.WARNING)
 
     def download(self, url):
-
-        try:
-            with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
-                ydl.download([url])
-        except Exception as e:
-            print ('ytDownloader::download: catched exception')
-            print (e)
-            print (traceback.print_exc())
-
+        if self.enabled:
+            try:
+                with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
+                    ydl.download([url])
+            except Exception as e:
+                print ('ytDownloader::download: catched exception')
+                print (e)
+                print (traceback.print_exc())
+        else:
+            print ('ytDownloader::download: downloader is disabled')
     def youtube_dl_hook(self, d):
         if d['status'] == 'finished':
             self.callback(d)

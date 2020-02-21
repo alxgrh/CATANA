@@ -76,9 +76,8 @@ apt-get install -y \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/* 
 
-echo INSTALL CYTHON WITH APT
+echo INSTALL PYTHON PACKAGES WITH APT
 apt-get update && apt-get install -y \
-		cython cython3 \
 		python-nose python3-nose \
 		python-h5py python3-h5py \
 		python-skimage python3-skimage \
@@ -100,9 +99,6 @@ apt-get update && apt-get install -y python3-opencv
 
 echo UPGRADE PIP VERSION
 pip3 install --upgrade pip
-
-echo INSTALL numpy scipy matplotlib scikit-image scikit-learn ipython  WITH PIP
-pip3 install numpy scipy matplotlib scikit-image scikit-learn ipython
 
 echo INSTALL CATANA requirements WITH PIP
 pip3 --no-cache-dir install -U -r requirements.txt
