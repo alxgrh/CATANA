@@ -97,18 +97,6 @@ echo INSTALL OPENCV WITH APT
 apt-get update && apt-get install -y python3-opencv 
 
 
-echo Install NVIDIA CUDA
-sudo apt-get purge nvidia*
-sudo apt-get autoremove
-sudo apt-get autoclean
-sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
-echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" | sudo tee /etc/apt/sources.list.d/cuda.list
-
-sudo apt-get update 
-sudo apt-get -o Dpkg::Options::="--force-overwrite" install cuda-10-0 cuda-drivers
-
-wget 'https://www.dropbox.com/s/wttt99al6y3qo2k/libcudnn7_7.6.5.32-1%2Bcuda10.0_amd64.deb'
-dpkg -i libcudnn7_7.6.5.32-1+cuda10.0_amd64.deb 
 
 echo UPGRADE PIP VERSION
 pip3 install --upgrade pip
@@ -122,10 +110,10 @@ pip3 --no-cache-dir install -U -r requirements.txt
 echo INSTALL CATANA WITH PIP
 pip3 install -U ./src 
 
-echo REINSTALL TENSORFLOW WITH PIP
-pip3 uninstall  -qqq  tensorflow
-pip3 uninstall  -qqq tensorflow-gpu
-pip3 install --no-cache-dir -qqq tensorflow-gpu==1.14.0
+#echo REINSTALL TENSORFLOW WITH PIP
+#pip3 uninstall  -qqq  tensorflow
+#pip3 uninstall  -qqq tensorflow-gpu
+#pip3 install --no-cache-dir -qqq tensorflow-gpu==1.14.0
 
 echo BUILD CATANA CYTHON MODULE 
 cd ..
