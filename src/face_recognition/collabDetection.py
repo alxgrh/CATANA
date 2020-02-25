@@ -186,8 +186,10 @@ print ('data extraction took', processTime, 'for', features.shape)
 start = time.time()
 
 #clustering
-uqc, hdb_mean_labels, hdb_mean_proba, hdb_mean_pers = hdbscan_tests(features, ftype='mean', min_cluster_size=2)
-
+#HDBSCAN
+#uqc, hdb_mean_labels, hdb_mean_proba, hdb_mean_pers = hdbscan_tests(features, ftype='mean', min_cluster_size=2)
+#DBSCAN
+uqc, hdb_mean_labels, hdb_mean_proba, hdb_mean_pers = dbscan_tests(features, ftype='mean', min_cluster_size=2)
 
 processTime = time.time() - start
 print ('distance computation took', processTime)
