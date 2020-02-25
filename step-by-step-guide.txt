@@ -1,7 +1,7 @@
 
 The CATANA code is supposed to run in Docker environment.
 
-Usage instructions follow. CLI commands indented with 4 spaces. You need to perform all commands as root user. 
+Usage instructions follow. CLI commands indented with 4 spaces. You need to perform all commands as root user. This guide was tested on Ubuntu 18, it's not guaranteed to work on other OS.
 
 
 1. SETUP ENVIRONMENT 
@@ -44,7 +44,7 @@ Check src/data_collection/youtubeAPICrawler/test_channels.json file for file for
 
     docker-compose up -d
 
-Building process can take long time.
+Building process can take a long time.
 
 
 2. RUN METADATA COLLECTION
