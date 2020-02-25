@@ -74,7 +74,6 @@ RUN apt-get install -y \
 	rm -rf /var/lib/apt/lists/*
 
 RUN  apt-get update && apt-get install -y \
-		cython cython3 \
 		python-nose python3-nose \
 		python-h5py python3-h5py \
 		python-skimage python3-skimage \
@@ -89,10 +88,22 @@ RUN  apt-get update && apt-get install -y \
 
 # OpenCV and Dlib related packages
 RUN apt-get update && apt-get install -y python3-opencv 
+RUN apt-get update && apt-get install -y python3-opencv 
 
-RUN pip3 install numpy scipy matplotlib scikit-image scikit-learn ipython
+# UPGRADE PIP VERSION
+RUN pip3 install --upgrade pip
+
 RUN pip3 --no-cache-dir install -U -r requirements.txt
 
-RUN pip3 install -U /catana/src 
+#INSTALL CATANA WITH PIP
+RUN pip3 install -U ./src 
+
+
+#BUILD CATANA CYTHON MODULE 
+
+WORKDIR /catana/src/face_recognition/cython_full
+RUN python3 setup.py install
+
+
 CMD ["/bin/sleep", "infinity"]
 
