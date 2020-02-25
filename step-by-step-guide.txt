@@ -26,7 +26,7 @@ There are two containers defined in docker-compose.yml:
 - MySQL database
 - CATANA repo
 
-Configure their environment through the .env file in the docker/ subdir:
+Configure their environments through the .env file in the docker/ subdir:
     nano docker/app.env
     nano docker/db.env
 
@@ -46,18 +46,18 @@ Check src/data_collection/youtubeAPICrawler/test_channels.json file for file for
 
 Building process can take long time.
 
-1.7. Connect to the CATANA container
-
-    docker exec -it catana bash
-
 
 2. RUN METADATA COLLECTION
 
-2.1 Enter Youtube crawler dir
+2.1 Connect to the CATANA container
+
+    docker exec -it catana bash
+
+2.2 Enter Youtube crawler dir
 
     cd src/data_collection/youtubeAPICrawler/
 
-2.2 Run Youtube metadata crawler
+2.3 Run Youtube metadata crawler
 It's highly advised to run long running tasks in the Screen session. 
 
 Start a Screen seesion:
@@ -68,7 +68,7 @@ To exit from the Screen use a 'CTRL+A D' key combination. To return to the Scree
 Run crawler:
 	scrapy crawl populate
 
-2.3 Check crawler status
+2.4 Check crawler status
 The crawler prints statistics after finishing. It should contain such lines:
 'downloader/response_status_count/200': 1124,
 'downloader/response_status_count/403': 645,
@@ -76,7 +76,7 @@ The crawler prints statistics after finishing. It should contain such lines:
 Non-zero value for the response status code 403 shows that than number of requests were rejected by Youtube as unauthorized. 
 This usually happens if API keys reached rate limit. Increase number of valid API keys in YOUTUBE_API_KEY_LIST file in this case.
 
-2.4 Check metadata in the Catana database
+2.5 Check metadata in the Catana database
 You can check downloaded metadata by connecting to the mysql database. Use password from the environment settings (key name is CATANA_DB_PASSWORD).
 
     mysql -u catana -h catana-database catana -p
