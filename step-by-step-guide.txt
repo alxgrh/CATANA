@@ -1,0 +1,173 @@
+
+The CATANA code is supposed to run in Docker environment.
+
+Usage instructions follow. CLI commands indented with 4 spaces. You need to perform all commands as root user. 
+
+
+1. SETUP ENVIRONMENT 
+
+1.1 Install Docker and docker-compose program
+
+    apt install docker-compose
+
+1.2 Start Docker daemon and verify runtime
+
+    systemctl start docker
+    docker info
+
+1.3 Clone the CATANA repo
+
+    git clone https://github.com/alxgrh/CATANA/
+    cd CATANA
+    git checkout devel_2020
+
+1.4. Configure environment
+There are two containers defined in docker-compose.yml:
+- MySQL database
+- CATANA repo
+
+Configure their environment through the .env file in the docker/ subdir:
+    nano docker/app.env
+    nano docker/db.env
+
+The most important setting are 
+YOUTUBE_CHANNEL_LIST
+YOUTUBE_API_KEY_LIST
+they need to be pointed to the relevant file names(See next point)
+
+1.5 Prepare channel list and Youtube API keys
+Put a channel list file and Youtube API keys file to the src/data_collection/youtubeAPICrawler/ dir. File names must match YOUTUBE_CHANNEL_LIST and YOUTUBE_API_KEY_LIST from app container environment.
+Check src/data_collection/youtubeAPICrawler/test_channels.json file for file format example.
+
+
+1.6 Bring containers up
+
+    docker-compose up -d
+
+Building process can take long time.
+
+1.7. Connect to the CATANA container
+
+    docker exec -it catana bash
+
+
+2. RUN METADATA COLLECTION
+
+2.1 Enter Youtube crawler dir
+
+    cd src/data_collection/youtubeAPICrawler/
+
+2.2 Run Youtube metadata crawler
+It's highly advised to run long running tasks in the Screen session. 
+
+Start a Screen seesion:
+    screen -R
+
+To exit from the Screen use a 'CTRL+A D' key combination. To return to the Screen run 'screen -R' again  
+
+Run crawler:
+	scrapy crawl populate
+
+2.3 Check crawler status
+The crawler prints statistics after finishing. It should contain such lines:
+'downloader/response_status_count/200': 1124,
+'downloader/response_status_count/403': 645,
+
+Non-zero value for the response status code 403 shows that than number of requests were rejected by Youtube as unauthorized. 
+This usually happens if API keys reached rate limit. Increase number of valid API keys in YOUTUBE_API_KEY_LIST file in this case.
+
+2.4 Check metadata in the Catana database
+You can check downloaded metadata by connecting to the mysql database. Use password from the environment settings (key name is CATANA_DB_PASSWORD).
+
+    mysql -u catana -h catana-database catana -p
+
+You can also connect to the DB from the host OS using this command:
+
+    mysql -u catana -h 127.0.0.1 -P 33306 catana -p
+
+Check videos and channels count
+
+    select count(*) from video;
+    select count(*) from channel;
+
+
+3. PERFORM FACE RECOGNITION
+
+3.1 Run video pipeline.
+
+    cd /catana/src/face_recognition
+    python3 videoPipeline.py
+
+This task is the longest-running in CATANA. It lasts days or weeks. It depends on number and duration of videos. 
+
+3.2 Check recognized features.
+Once video pipeline completed you may check results in the database. Run SQL command in DB
+
+    SELECT id,videoID,duration
+    from video_features vf
+    where duration > 30;
+
+it will display all features(i.e. faces) that appears in videos more than in 30 seconds.
+
+4. PERFORM FACE CLUSTERING
+
+4.1 Run collaboration detection pipeline
+
+    cd /catana/src/face_recognition
+	python3 collabDetection.py
+
+This task also could run few days. 
+
+4.2 Check clustering results. 
+Clustering pipeline dumps data raw to two files
+hdb_collab_cluster.txt
+hdb_collab_pre-filterd_cluster.txt
+
+and also inserts results into the database. Use this SQL command to view clustering results on channel and video level
+    select c.title as channel, v.id as video_id, vf.id as feature_id, vf.duration as feature_duration, vfc.cluster, v.duration
+    from channel c, video v, video_features vf, video_face_cluster vfc
+    where 
+        v.channelID = c.id 
+        and vf.videoID = v.id 
+        and vfc.featureID = vf.id
+        order by cluster;
+
+Example output:
+MySQL [catana]> select c.title as channel, v.id as video_id, vf.id as feature_id, vf.duration as feature_duration, vfc.cluster, v.duration
+    -> from channel c, video v, video_features vf, video_face_cluster vfc
+    -> where 
+    -> v.channelID = c.id 
+    -> and vf.videoID = v.id 
+    -> and vfc.featureID = vf.id
+    -> order by cluster;
++-------------+-------------+------------+------------------+---------+----------+
+| channel     | video_id    | feature_id | feature_duration | cluster | duration |
++-------------+-------------+------------+------------------+---------+----------+
+| juicystar07 | 8GTrogQx144 |         30 |            277.1 |       1 | PT8M57S  |
+| juicystar07 | 7uH6hL4_KvI |         27 |          331.064 |       1 | PT16M23S |
+| juicystar07 | 1D4lgDHNVHk |         15 |           210.11 |       1 | PT13M21S |
+| juicystar07 | 1okpR8VUYhQ |          1 |          313.213 |       1 | PT13M46S |
+| juicystar07 | 21IqloyVWXk |         10 |          694.628 |       1 | PT18M56S |
+| juicystar07 | 21IqloyVWXk |         12 |          44.2776 |       1 | PT18M56S |
+| juicystar07 | 2AGSOMwULug |         18 |          434.768 |       1 | PT31M5S  |
+| juicystar07 | 2AGSOMwULug |         19 |          439.839 |       1 | PT31M5S  |
+| juicystar07 | -i-mc98vbPI |          4 |           553.32 |       1 | PT20M    |
+| juicystar07 | 2cYynPWlgPM |         21 |          451.551 |       1 | PT13M29S |
+| juicystar07 | 2pO56z7oMZE |         16 |           243.61 |       1 | PT11M27S |
+| juicystar07 | 3hSZunsMeGk |         25 |          729.195 |       1 | PT27M27S |
+| juicystar07 | 6nJoIOSwjWo |         29 |          1491.52 |       1 | PT29M9S  |
+| juicystar07 | 2cYynPWlgPM |         20 |          198.732 |       2 | PT13M29S |
+| juicystar07 | 7uH6hL4_KvI |         26 |          160.227 |       2 | PT16M23S |
+| juicystar07 | 6nJoIOSwjWo |         28 |          98.2648 |       2 | PT29M9S  |
+| juicystar07 | 3hSZunsMeGk |         24 |          40.3737 |       2 | PT27M27S |
+| juicystar07 | -i-mc98vbPI |          6 |          60.1935 |       2 | PT20M    |
+| juicystar07 | -i-mc98vbPI |          5 |          38.4718 |       2 | PT20M    |
++-------------+-------------+------------+------------------+---------+----------+
+
+ 
+
+
+
+ 
+
+

@@ -41,6 +41,7 @@ RUN apt-get install -y \
 		unzip \
 		vim \
 		wget \
+		screen \
 		zlib1g-dev \
 		qt5-default \
 		libvtk6-dev \
@@ -81,6 +82,7 @@ RUN  apt-get update && apt-get install -y \
         python-openssl python3-openssl \
 		python-mysqldb python3-mysqldb \
 		libmysqlclient-dev \
+		mariadb-client-10.1 \
         && \
 	apt-get clean && \
 	apt-get autoremove && \
@@ -104,6 +106,7 @@ RUN pip3 install -U ./src
 WORKDIR /catana/src/face_recognition/cython_full
 RUN python3 setup.py install
 
+WORKDIR /catana
 
 CMD ["/bin/sleep", "infinity"]
 
