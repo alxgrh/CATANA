@@ -15,8 +15,8 @@ BOT_NAME = 'youtubeAPICrawler'
 SPIDER_MODULES = ['youtubeAPICrawler.spiders']
 NEWSPIDER_MODULE = 'youtubeAPICrawler.spiders'
 
-LOG_LEVEL = 'INFO'
-
+#LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 
 # bug fix
 DOWNLOAD_HANDLERS = {'s3': None} 
@@ -30,12 +30,12 @@ DOWNLOAD_HANDLERS = {'s3': None}
 ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 128
+CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 CONCURRENT_REQUESTS_PER_DOMAIN = 32
 #CONCURRENT_REQUESTS_PER_IP = 16
