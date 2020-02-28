@@ -46,6 +46,11 @@ Check src/data_collection/youtubeAPICrawler/test_channels.json file for file for
 
 Building process can take a long time.
 
+/TIP: Removing Docker environment./ 
+If you want to completely reinstall containers, you need to shut them down and purge resources.
+    
+    docker-compose down
+    docker system prune -a
 
 2. RUN METADATA COLLECTION
 
@@ -65,8 +70,13 @@ Start a Screen seesion:
 
 To exit from the Screen use a 'CTRL+A D' key combination. To return to the Screen run 'screen -R' again  
 
-Run crawler:
-	scrapy crawl populate
+There are two variants of crawler:
+
+- API Crawler, it requires valid API keys and may experience requests quota issues. 
+    scrapy crawl populate
+
+- Web Frontend Crawler. It doesn't need API keys. Your IP might be blocked by Youtube if it suspected malicious activity.
+    scrapy crawl webspider
 
 2.4 Check crawler status
 The crawler prints statistics after finishing. It should contain such lines:
