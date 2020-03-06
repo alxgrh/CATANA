@@ -189,7 +189,7 @@ start = time.time()
 #HDBSCAN
 #uqc, hdb_mean_labels, hdb_mean_proba, hdb_mean_pers = hdbscan_tests(features, ftype='mean', min_cluster_size=2)
 #DBSCAN
-uqc, hdb_mean_labels, hdb_mean_proba, hdb_mean_pers = dbscan_tests(features, ftype='mean', min_cluster_size=2)
+uqc, hdb_mean_labels, hdb_mean_proba, hdb_mean_pers = dbscan_tests(features, ftype='mean')
 
 processTime = time.time() - start
 print ('distance computation took', processTime)
