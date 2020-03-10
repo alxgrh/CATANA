@@ -189,20 +189,21 @@ start = time.time()
 #HDBSCAN
 #uqc, hdb_mean_labels, hdb_mean_proba, hdb_mean_pers = hdbscan_tests(features, ftype='mean', min_cluster_size=2)
 #DBSCAN
-uqc, hdb_mean_labels, hdb_mean_proba, hdb_mean_pers = dbscan_tests(features, ftype='mean')
+uqc, hdb_mean_labels, hdb_mean_proba  = dbscan_tests(features, ftype='mean')
 
 processTime = time.time() - start
 print ('distance computation took', processTime)
 
+##HDBSCAN
+#ftos = extend_df(ft.copy(), hdb_mean_labels, hdb_mean_proba, hdb_mean_pers)
+#ftos.to_csv(r'hdb_collab_pre-filterd_cluster.txt', sep=str('\t'), encoding='utf-8')
+#ftos = ftos[ftos.pers > 0.05]
+#ftos.to_csv(r'hdb_collab_cluster.txt', sep=str('\t'), encoding='utf-8')
 
-ftos = extend_df(ft.copy(), hdb_mean_labels, hdb_mean_proba, hdb_mean_pers)
-
-ftos.to_csv(r'hdb_collab_pre-filterd_cluster.txt', sep=str('\t'), encoding='utf-8')
-
-ftos = ftos[ftos.pers > 0.05]
-
+#DBSCAN
+ftos = ft.copy()
+ftos['label'] = np.array(hdb_mean_labels)
 ftos.to_csv(r'hdb_collab_cluster.txt', sep=str('\t'), encoding='utf-8')
-
 
 # write cluster-feature id pairs into database
 with db._session_scope(True) as session:
